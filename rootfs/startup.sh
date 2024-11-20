@@ -71,5 +71,7 @@ fi
 # clearup
 PASSWORD=
 HTTP_PASSWORD=
+# 启动 Clash Verge
+clash-verge
 
 exec /bin/tini -- supervisord -n -c /etc/supervisor/supervisord.conf
