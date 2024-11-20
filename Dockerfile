@@ -135,7 +135,7 @@ RUN ln -sf /usr/local/lib/web/frontend/static/websockify" "/usr/local/lib/web/fr
 RUN ln -sf /usr/local/lib/web/frontend/static/websockify /usr/local/lib/web/frontend/static/novnc/utils/websockify && \
 	chmod +x /usr/local/lib/web/frontend/static/websockify/run
 
-EXPOSE 80
+EXPOSE 80 7897 9097
 WORKDIR /root
 ENV HOME=/home/ubuntu \
     SHELL=/bin/bash
