@@ -75,6 +75,19 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/cache/apt/* /tmp/a.txt /tmp/b.txt
 
+# 安装 Clash Verge 的依赖包
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libayatana-appindicator3-1 \
+    libwebkit2gtk-4.0-37 && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+
+# 下载并安装 Clash Verge 的 .deb 包
+RUN wget https://github.com/clash-verge-rev/clash-verge-rev/releases/download/v1.7.7/clash-verge_1.7.7_arm64.deb -O /tmp/clash-verge_1.7.7_arm64.deb \
+    && dpkg -i /tmp/clash-verge_1.7.7_arm64.deb \
+    && apt-get install -f -y \
+    && rm /tmp/clash-verge_1.7.7_arm64.deb
 
 ################################################################################
 # builder
@@ -108,19 +121,6 @@ RUN sed -i 's#app/locale/#novnc/app/locale/#' /src/web/dist/static/novnc/app/ui.
 
 RUN cd /src/web/dist/static/novnc && patch -p0 < /src/web/novnc-armhf-1.patch
 
-# 安装 Clash Verge 的依赖包
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libayatana-appindicator3-1 \
-    libwebkit2gtk-4.0-37 && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-
-# 下载并安装 Clash Verge 的 .deb 包
-RUN wget https://github.com/clash-verge-rev/clash-verge-rev/releases/download/v1.7.7/clash-verge_1.7.7_arm64.deb -O /tmp/clash-verge_1.7.7_arm64.deb \
-    && dpkg -i /tmp/clash-verge_1.7.7_arm64.deb \
-    && apt-get install -f -y \
-    && rm /tmp/clash-verge_1.7.7_arm64.deb
 
 
 ################################################################################
