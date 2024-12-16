@@ -104,13 +104,20 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
 COPY web /src/web
 RUN cd /src/web \
     && yarn \
-    && yarn build
+    && yarn build \
+    && echo "---- 构建输出目录 ----" \
+    && ls -R /src/web/dist
 
-# 添加调试命令以检查文件是否存在
-RUN ls -l /src/web/dist/static/novnc/app/
+# 检查是否生成了 novnc/app/ui.js
+RUN if [ -f /src/web/dist/static/novnc/app/ui.js ]; then \
+        echo "文件存在，继续执行 sed 和 patch"; \
+    else \
+        echo "错误: /src/web/dist/static/novnc/app/ui.js 不存在" && exit 1; \
+    fi
 
-RUN sed -i 's#app/locale/#novnc/app/locale/#' /src/web/dist/static/novnc/app/ui.js
-RUN cd /src/web/dist/static/novnc && patch -p0 < /src/web/novnc-armhf-1.patch
+RUN sed -i 's#app/locale/#novnc/app/locale/#' /src/web/dist/static/novnc/app/ui.js \
+    && cd /src/web/dist/static/novnc \
+    && patch -p0 < /src/web/novnc-armhf-1.patch
 
 ################################################################################
 # merge
