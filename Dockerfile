@@ -1,5 +1,5 @@
-# Built with arch: arm64 flavor: lxde image: ubuntu:18.04
-#
+# Built with arch: arm64 flavor: lxde image: ubuntu:20.04
+
 ################################################################################
 # base system
 ################################################################################
@@ -86,7 +86,7 @@ RUN apt-get update \
 # builder
 ################################################################################
 FROM ubuntu:20.04 as builder
-RUN sed -i 's#http://archive.ubuntu.com/ubuntu/#mirror://mirrors.ubuntu.com/mirrors.txt#' /etc/apt/sources.list;
+RUN sed -i 's#http://archive.ubuntu.com/ubuntu/#mirror://mirrors.ubuntu.com/mirrors.txt#' /etc/apt/sources.list
 RUN apt-get update \
     && apt-get install -y --no-install-recommends curl ca-certificates gnupg patch
 
@@ -105,6 +105,9 @@ COPY web /src/web
 RUN cd /src/web \
     && yarn \
     && yarn build
+
+# 添加调试命令以检查文件是否存在
+RUN ls -l /src/web/dist/static/novnc/app/
 
 RUN sed -i 's#app/locale/#novnc/app/locale/#' /src/web/dist/static/novnc/app/ui.js
 RUN cd /src/web/dist/static/novnc && patch -p0 < /src/web/novnc-armhf-1.patch
